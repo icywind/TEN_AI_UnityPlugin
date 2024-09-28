@@ -12,14 +12,6 @@ namespace Agora.TEN.Client
         public string AppID = "";
 
         [SerializeField]
-        /// RTC Token
-        public string RtcToken = "";
-
-        [SerializeField]
-        /// RTC Channel Name
-        public string ChannelName = "YOUR_CHANNEL_NAME";
-
-        [SerializeField]
         /// Expected Agent UID
         public uint AgentUid = 1234;
 
@@ -33,10 +25,22 @@ namespace Agora.TEN.Client
 
         [SerializeField]
         /// The voice used by the Agent
-        public VoiceType VoiceType;
+        public AzureVoiceType AzureVoice;
+
+        [SerializeField]
+        /// if it is not the provided Azure choice, enter the actual voice name here
+        public string AltVoiceName;
 
         [SerializeField]
         /// The base URL of the server
         public string ServerBaseURL;
+
+        [SerializeField]
+        [TextArea(3, 10)]
+        public string AgentOpeningGreeting = "TEN agent connected.How can I help you today?";
+
+        [SerializeField]
+        [TextArea(3, 10)]
+        public string AgentVisionCheckingWords = "[\"Let me take a look...\",\"Let me check your camera...\",\"Please wait for a second...\"]";
     }
 }

@@ -17,6 +17,8 @@ namespace Agora.TEN.Client
         public async void StartSession(uint LocalUID)
         {
             var res = await NetworkManager.ApiRequestStartService(LocalUID);
+            //var res = await NetworkManager.SampleApiRequest();
+            Debug.LogWarning("Sending sample api message for start.");
 
             // Sample response:
             // { "code": "0", "data": null, "msg": "success" }

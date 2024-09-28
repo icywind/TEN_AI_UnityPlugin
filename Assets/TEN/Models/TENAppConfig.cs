@@ -1,52 +1,30 @@
-using UnityEngine;
-using System.IO;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
-
+using Agora.TEN.Server.Models;
+using UnityEngine;
 
 namespace Agora.TEN.Client
 {
-    [JsonConverter(typeof(StringEnumConverter))]
-    public enum RtcProducts
+    // Azure voice samples: https://techcommunity.microsoft.com/t5/ai-azure-ai-services-blog/introducing-super-realistic-ai-voices-optimized-for/ba-p/3933744
+    public enum AzureVoiceType
     {
-        [JsonProperty("rtc")]
-        Rtc,
-
-        [JsonProperty("ils")]
-        Ils,
-
-        [JsonProperty("voice")]
-        Voice
+        [JsonProperty("brian")]
+        Brian,
+        [JsonProperty("jane")]
+        Jane,
+        [JsonProperty("andrew")]
+        Andrew,
+        [JsonProperty("emma")]
+        Emma,
+        [JsonProperty("guy")]
+        Guy,
+        [JsonProperty("jenny")]
+        Jenny,
+        // Set these voice up with language zh-CN handled
+        //[JsonProperty("yunjie")]
+        //Yunjie,
+        //[JsonProperty("yunxi")]
+        //Yunxi
     }
-
-    public static class RtcProductsExtensions
-    {
-        public static string GetDescription(this RtcProducts product)
-        {
-            switch (product)
-            {
-                case RtcProducts.Rtc:
-                    return "Video Calling";
-                case RtcProducts.Ils:
-                    return "Interactive Live Streaming";
-                case RtcProducts.Voice:
-                    return "Voice Calling";
-                default:
-                    return string.Empty;
-            }
-        }
-    }
-
-    [JsonConverter(typeof(StringEnumConverter))]
-    public enum VoiceType
-    {
-        [JsonProperty("male")]
-        Male,
-
-        [JsonProperty("female")]
-        Female
-    }
-
 
     public class AppConfig
     {
@@ -65,81 +43,101 @@ namespace Agora.TEN.Client
         }
 
         /// Expected Agent UID
-        [JsonProperty("agentUid")]
         public uint AgentUid { get; set; }
 
         /// Automatic Speech Recognition language
-        [JsonProperty("agoraAsrLanguage")]
         public string AgoraAsrLanguage { get; set; }
 
-        /// The voice used by the Agent
-        [JsonProperty("voiceType")]
-        public VoiceType VoiceType { get; set; }
-
         /// APP ID from https://console.agora.io
-        [JsonProperty("appId")]
         public string AppId { get; set; }
 
         /// Channel prefill text to join
-        [JsonProperty("channel")]
         public string Channel { get; set; }
 
-        /// RTC token
-        [JsonProperty("rtcToken")]
+        /// RTC token, provided by server
         public string RtcToken { get; set; }
 
-        /// Choose product type from "rtc", "ilr", "voice"
-        [JsonProperty("product")]
-        public RtcProducts Product { get; set; }
-
-        [JsonProperty("graph")]
+        /// <summary>
+        /// TEN Graph name
+        /// </summary>
         public string GraphName { get; set; }
 
         /// The base URL of the server
-        [JsonProperty("serverBaseURL")]
         public string ServerBaseURL { get; set; }
 
-        public static void ReadConfig(string fileLoc = "")
-        {
-            string filePath = fileLoc;
-            if (filePath == "")
-            {
-                filePath = Path.Combine(Application.dataPath, "config.json");
-            }
-
-            if (!File.Exists(filePath))
-            {
-                Debug.LogError("Config file not found! filePath=" + filePath);
-                _shared = default;
-            }
-
-            try
-            {
-                var jsonData = File.ReadAllText(filePath);
-                _shared = JsonConvert.DeserializeObject<AppConfig>(jsonData);
-            }
-            catch
-            {
-                Debug.LogError("JSON deserialization failed! filePath=" + filePath);
-                _shared = default;
-            }
-        }
+        public AgentProperties AgentProperties { get; set; }
 
         public void SetValue(TENConfigInput input)
         {
             this.AgentUid = input.AgentUid;
             this.AgoraAsrLanguage = input.AgoraAsrLanguage;
             this.AppId = input.AppID;
-            this.RtcToken = input.RtcToken;
             this.ServerBaseURL = input.ServerBaseURL;
-            this.VoiceType = input.VoiceType;
             this.GraphName = input.Graph;
-            this.Channel = input.ChannelName;
+            this.AgentProperties = MakeAgentProperties(input);
         }
 
-        public override string ToString()
+        /// <summary>
+        ///    Create the Properties
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        virtual protected AgentProperties MakeAgentProperties(TENConfigInput input)
         {
-            return $"AgentUid: {AgentUid}, AgoraAsrLanguage: {AgoraAsrLanguage}, VoiceType: {VoiceType}, AppId: {AppId}, Channel: {Channel}, RtcToken: {RtcToken}, Product: {Product}, ServerBaseURL: {ServerBaseURL}";
+            AgoraRtcExtConfig agoraConfig = new AgoraRtcExtConfig
+            {
+                AgoraAsrLanguage = input.AgoraAsrLanguage
+            };
+
+            AzureTtsExtConfig ttsConfig = new AzureTtsExtConfig
+            {
+                AzureSynthesisVoiceName = MakeVoiceName(input.AzureVoice)
+            };
+
+            // If the alt name is specified, overide the name.
+            if (!string.IsNullOrWhiteSpace(input.AltVoiceName))
+            {
+                ttsConfig.AzureSynthesisVoiceName = input.AltVoiceName;
+            }
+
+            OpenaiChatgptExtConfig openaiChatgpt = new OpenaiChatgptExtConfig
+            {
+                Greeting = input.AgentOpeningGreeting,
+                CheckingVisionTextItems = input.AgentVisionCheckingWords,
+                Model = GetLLM(input.Graph)
+            };
+
+            return new AgentProperties
+            {
+                AgoraRtc = agoraConfig,
+                AzureTts = ttsConfig,
+                OpenaiChatgpt = openaiChatgpt
+            };
+        }
+
+        virtual protected string MakeVoiceName(AzureVoiceType voiceType, string langauge = "en-US")
+        {
+            return $"{langauge}-{voiceType}Neural";
+        }
+
+        virtual public void SetAgentVoice(AzureVoiceType voiceType)
+        {
+            AgentProperties.AzureTts.AzureSynthesisVoiceName = MakeVoiceName(voiceType);
+        }
+
+        virtual protected string GetLLM(string graphName)
+        {
+            if (graphName == "camera.va.openai.azure")
+            {
+                return "gpt-4o";
+            }
+            else if (graphName == "va.openai.azure")
+            {
+                return "gpt-4o-mini";
+            }
+
+            return "gpt-4o";
+
         }
     }
 

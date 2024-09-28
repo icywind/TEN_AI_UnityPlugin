@@ -13,10 +13,12 @@ MonoBehaviour:
   m_Name: TENConfigInput
   m_EditorClassIdentifier: 
   AppID: 
-  RtcToken: 
-  ChannelName: agora_unity2
   AgentUid: 1234
   AgoraAsrLanguage: en-US
   Graph: camera.va.openai.azure
-  VoiceType: 0
+  AzureVoice: 4
+  AltVoiceName: 
   ServerBaseURL: https://astra.agoraguru.net
+  AgentOpeningGreeting: TEN agent connected.  What can I do for you today?
+  AgentVisionCheckingWords: '["Let me take a look...","Let me check your camera...","Please
+    wait for a second..."]'
