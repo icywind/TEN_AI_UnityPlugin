@@ -15,10 +15,10 @@ MonoBehaviour:
   AppID: 
   AgentUid: 1234
   AgoraAsrLanguage: en-US
-  Graph: camera.va.openai.azure
-  AzureVoice: 4
+  Graph: camera_va_openai_azure
+  AzureVoice: 3
   AltVoiceName: 
-  ServerBaseURL: https://astra.agoraguru.net
-  AgentOpeningGreeting: TEN agent connected.  What can I do for you today?
+  ServerBaseURL: http://localhost:8080
+  AgentOpeningGreeting: TEN agent connected.  Happy to chat with you today.
   AgentVisionCheckingWords: '["Let me take a look...","Let me check your camera...","Please
     wait for a second..."]'

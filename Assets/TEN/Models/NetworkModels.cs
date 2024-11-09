@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Newtonsoft.Json;
 
 namespace Agora.TEN.Server.Models
@@ -76,9 +76,17 @@ namespace Agora.TEN.Server.Models
         [JsonProperty("graph_name")]
         public string GraphName { get; set; }
 
-        /// The type of voice.
+        /// The ASR language
+        [JsonProperty("language")]
+        public string Language { get; set; }
+
         [JsonProperty("properties")]
         public AgentProperties Properties { get; set; }
+
+        /// The type of voice.
+        [JsonProperty("voice_type")]
+        public string VoiceType { get; set; }
+
     }
 
     #endregion

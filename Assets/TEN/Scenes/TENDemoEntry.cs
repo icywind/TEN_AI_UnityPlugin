@@ -39,6 +39,7 @@ namespace Agora.TEN.Client
             JoinButton.onClick.AddListener(JoinChannel);
 
             int enumCount = Enum.GetValues(typeof(AzureVoiceType)).Length;
+            string configVoiceType = TENConfig.AzureVoice.ToString();
             foreach (string voiceName in Enum.GetNames(typeof(AzureVoiceType)))
             {
                 GameObject go = Instantiate(TogglePrefab);
@@ -56,7 +57,9 @@ namespace Agora.TEN.Client
                 {
                     tran.localScale = Vector3.one;
                 }
-                Console.WriteLine("Added Toggle:" + voiceName);
+                if (voiceName == configVoiceType) {
+                    toggle.SetIsOnWithoutNotify(true);
+				}
             }
         }
 

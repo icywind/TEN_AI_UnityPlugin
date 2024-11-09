@@ -1,4 +1,4 @@
-﻿using Agora.TEN.Server.Models;
+using Agora.TEN.Server.Models;
 using Newtonsoft.Json;
 using System;
 using System.IO;
@@ -51,6 +51,8 @@ namespace Agora.TEN.Client
         {
             // Get the shared AppConfig instance
             var config = AppConfig.Shared;
+            // Create a ServerStartProperties object with configuration for Agora RTC, OpenAI ChatGPT, and Azure TTS
+            var startProperties = config.AgentProperties;
 
             // Create a ServiceStartRequest object with request ID, channel name, OpenAI proxy URL, remote stream ID, graph name, voice type, and start properties
             var data = new ServiceStartRequest
@@ -58,9 +60,22 @@ namespace Agora.TEN.Client
                 RequestId = GetUUID(),
                 ChannelName = config.Channel,
                 UserUid = uid,
-                GraphName = config.GraphName, // e.g.  "camera.va.openai.azure",
-                Properties = config.AgentProperties
+                GraphName = config.GraphName, 
+                VoiceType = "female",
+                Language = "en-US",
+                Properties = startProperties
             };
+
+            //var data = new StartServiceRequest
+            //{
+            //    RequestId = GetUUID(),
+            //    ChannelName = config.Channel,
+            //    //VoiceType = config.VoiceType.ToString().ToLower(),
+            //    VoiceType = "male",
+            //    UserUid = uid,
+            //    GraphName = "va.openai.azure",
+            //    Language = "en-US"
+            //};
 
             // Construct the API endpoint URL
             var endpoint = $"{config.ServerBaseURL}/start";
@@ -161,56 +176,6 @@ namespace Agora.TEN.Client
                 return jsonResponse;
             }
         }
-
-        static string testStartJSON = @"{
-    ""request_id"": ""a9634d7c-74ad-41ff-a1b1-2b3370a70e0e"",
-    ""channel_name"": ""agora_astratest"",
-    ""user_uid"": 149597,
-    ""graph_name"": ""camera.va.openai.azure"",
-    ""language"": ""en-US"",
-    ""properties"": {
-        ""agora_rtc"": {
-            ""agora_asr_language"": ""en-US""
-        },
-        ""openai_chatgpt"": {
-            ""model"": ""gpt-4o"",
-            ""greeting"": ""ASTRA agent connected. How can i help you today?"",
-            ""checking_vision_text_items"": ""[\""Let me take a look...\"",\""Let me check your camera...\"",\""Please wait for a second...\""]""
-        },
-        ""azure_tts"": {
-            ""azure_synthesis_voice_name"": ""en-US-JennyNeural""
-        }
-    }
-    }";
-
-        public static async Task<string> SampleApiRequest()
-        {
-            AppConfig.Shared.Channel = "agora_astratest";
-            string url = $"{AppConfig.Shared.ServerBaseURL}/start";
-            var json = testStartJSON;
-
-            Debug.Log("API Sending data:" + json);
-
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-            request.Method = "POST";
-            request.ContentType = "application/json";
-            request.KeepAlive = false;
-            request.Timeout = 90000;
-
-            using (var postStream = new StreamWriter(request.GetRequestStream()))
-            {
-                postStream.Write(json);
-            }
-
-            using (HttpWebResponse response = (HttpWebResponse)(await request.GetResponseAsync()))
-            {
-                StreamReader reader = new StreamReader(response.GetResponseStream());
-                string jsonResponse = reader.ReadToEnd();
-                Debug.Log(url + " -------> " + jsonResponse);
-                return jsonResponse;
-            }
-        }
-
 
         internal static string GetUUID()
         {
