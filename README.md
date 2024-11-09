@@ -51,7 +51,6 @@ Note, the last verified commit is `ac7fd7a7a76d09d018513989d32b37ba7685e652`.
 0. Download the TENClientFramework.unitypackage file from the **Releases** section; import it to your project.
 1. Download and import the [Agora Video SDK](https://docs.agora.io/en/sdks?platform=unity) for Unity.
 2. Drag the prefabs into your project and use them connect to your controller code.
-	- AppConfigInput
 	- ChatController
 	- SphereVisual
 	- TENManager
@@ -65,24 +64,40 @@ Note, the last verified commit is `ac7fd7a7a76d09d018513989d32b37ba7685e652`.
 1. Pass Scriptable object to AppConfig:
 
 ```csharp
+using Agora.TEN.Client;
+```
+```csharp
+[SerializeField]
+TENConfigInput TENConfig; // input from Editor
+
+// Call this function in your Init step
 void  SetConfig()
 {
 	AppConfig.Shared.SetValue(TENConfig);
+	// obtain channel name before this call
+    AppConfig.Shared.Channel = _channelName;
 }
 ```
 
-2. Hook them up in your main logic:
+2. Hook the prefabs up in your main logic:
 
 ```csharp
 [SerializeField]
-internal  IChatTextDisplay  TextDisplay;
+internal  IChatTextDisplay  TextDisplay;  // ChatController
 [SerializeField]
-internal  TENSessionManager  TENSession;
+internal  TENSessionManager  TENSession;  // TENManager
 [SerializeField]
-internal  SphereVisualizer  Visualizer;
+internal  SphereVisualizer  Visualizer;   // SphereVisual
 ```
 
-3. Use ```TENSession.GetToken()``` to get token before joining channel
+3. Use `TENSession.GetToken()` to get token before joining channel
+```csharp
+async void GetTokenAndJoin()
+{
+    AppConfig.Shared.RtcToken = await TENSession.GetToken();
+    JoinChannel();  // your join channel call that uses the rtc token
+}
+```
 
 4. Setup for Audio display before Mixing in InitEngine()
 
@@ -98,7 +113,7 @@ AUDIO_FRAME_POSITION.AUDIO_FRAME_POSITION_BEFORE_MIXING,OBSERVER_MODE.RAW_DATA);
 ```csharp
 internal  class  AudioFrameObserver : IAudioFrameObserver
 {
-	TENDemoChat  _app;
+	TENDemoChat  _app;  // Replace TENDemo with your controller class name
 	internal  AudioFrameObserver(TENDemoChat  client)
 	{
 		_app = client;
@@ -116,8 +131,9 @@ public  override  bool  OnPlaybackAudioFrameBeforeMixing(string  channel_id, uin
   
   
 
-6. OnJoinChannelSuccess()
+6. Add the following to OnJoinChannelSuccess()
 ```csharp
+// _app is the instance of your controller class
 _app.TENSession.StartSession(connection.localUid);
 ```
 

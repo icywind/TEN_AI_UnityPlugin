@@ -86,6 +86,7 @@
     <Compile Include="Assets/TEN/Utils/UIElementDragger.cs" />
     <Compile Include="Assets/Agora-RTC-Plugin/API-Example/Tools/UIElementDragger.cs" />
     <Compile Include="Assets/Agora-RTC-Plugin/API-Example/Examples/Advanced/MediaPlayer/MediaPlayerExample.cs" />
+    <Compile Include="Assets/TEN/Models/STTStreamDecoder.cs" />
     <Compile Include="Assets/Agora-RTC-Plugin/API-Example/Examples/Advanced/Plugin/PluginSceneSample.cs" />
     <Compile Include="Assets/TEN/Scenes/TENDemoEntry.cs" />
     <Compile Include="Assets/Agora-RTC-Plugin/API-Example/Examples/Advanced/Metadata/MetadataSample.cs" />
@@ -125,7 +126,6 @@
     <Compile Include="Assets/TEN/Utils/DragObject.cs" />
     <Compile Include="Assets/Agora-RTC-Plugin/API-Example/Examples/Advanced/StartRhythmPlayer/StartRhythmPlayer.cs" />
     <Compile Include="Assets/Agora-RTC-Plugin/API-Example/Examples/Advanced/PushEncodedVideoImage/PushEncodedVideoImage.cs" />
-    <Compile Include="Assets/TEN/Models/STTStreamDecoder.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets/Agora-RTC-Plugin/Agora-Unity-RTC-SDK/Plugins/macOS/AgoraRtcWrapperUnity.bundle/Contents/Frameworks/AgoraRtcKit.framework/Versions/A/Headers/IAgoraMediaStreamingSource.h" />
