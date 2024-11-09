@@ -47,6 +47,9 @@ Note, the last verified commit is `ac7fd7a7a76d09d018513989d32b37ba7685e652`.
 
 4. Play the demo on Editor or build it to device platform of your choice.  
 
+### Alternatively, Android apk
+Go to the Release section, download the apk file and experience the AI Agent.
+
 ## To use the prefab for your own project
 0. Download the TENClientFramework.unitypackage file from the **Releases** section; import it to your project.
 1. Download and import the [Agora Video SDK](https://docs.agora.io/en/sdks?platform=unity) for Unity.
@@ -159,8 +162,9 @@ TENSession.StopSession();
 For reference, it is worthwhile to check out the following resources:
 
 * [TEN Framework docs](https://doc.theten.ai/)
-
+* [TEN IOS Client](https://github.com/AgoraIO-Community/TEN-AI-Demo-IOS)
 * [Agora SDK API references](https://api-ref.agora.io/en/voice-sdk/ios/4.x/documentation/agorartckit).
+
 
   
 
