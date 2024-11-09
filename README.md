@@ -20,43 +20,47 @@ The Plugin is exported as a reusable package that can be imported on any Agora R
 
   
 
-### The implicit requirement by TEN Frameworks:
+### Implicit requirements by TEN Framework:
 
-- Text to Speech Support (e.g. API Key from Azure)
+- Text to Speech Support (API Key from [Azure Speech Service](https://portal.azure.com/#view/Microsoft_Azure_ProjectOxford/CognitiveServicesHub/~/SpeechServices))
 
-- LLM Support (e.g. OpenAI API key)
+- LLM Support (e.g. [API key from OpenAI](https://platform.openai.com/api-keys))
 
 ## Setups
 
 ### TEN Agent Server
 
-First you should have gotten the TEN Agent working in your environment. You will just need the Server running for this application.
+First you should have gotten the TEN Agent working in your environment. You will just need the Server (ten_agent_dev) running for this application.
 
-![docker](https://github.com/user-attachments/assets/606c6e75-c95c-4f8b-bea7-f688031ea745)
+![docker](https://github.com/user-attachments/assets/f292ad45-7be7-458a-b40a-46cce847809f)
 
-The last verified commit is `ac7fd7a7a76d09d018513989d32b37ba7685e652`.
+Note, the last verified commit is `ac7fd7a7a76d09d018513989d32b37ba7685e652`.
 
   
 
-### To run this DEMO
-
+## To run this Demo
+0. Clone this project.
 1. Download and import the [Agora Video SDK](https://docs.agora.io/en/sdks?platform=unity) for Unity.
 2. Add both **TENEntryScreen** scene and **TENDemoScene** to the Build Settings. The TENEntryScreen scene should be on top.
 3. Fill out the information for Config input asset.
+![ten config](https://github.com/user-attachments/assets/4eab50db-a885-4d06-a349-64c3cadd188f)
+
 4. Play the demo on Editor or build it to device platform of your choice.  
 
-### To use the prefab for your own project
+## To use the prefab for your own project
+0. Download the TENClientFramework.unitypackage file from the **Releases** section; import it to your project.
 1. Download and import the [Agora Video SDK](https://docs.agora.io/en/sdks?platform=unity) for Unity.
 2. Drag the prefabs into your project and use them connect to your controller code.
 	- AppConfigInput
 	- ChatController
 	- SphereVisual
 	- TENManager
-3. Follow the [Modification Steps](#Modification_Steps_to_An_Existing_Project).
+3. Follow the [Modification Steps](#modification-steps-to-an-existing-project) below.
 4. Fill out the information for Config input asset.
+
 5. Play the demo on Editor or build it to device platform of your choice. 
 
-### Modification Steps to An Existing Project
+## Modification Steps to An Existing Project
 
 1. Pass Scriptable object to AppConfig:
 
