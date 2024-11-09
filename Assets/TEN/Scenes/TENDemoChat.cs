@@ -105,6 +105,9 @@ namespace Agora.TEN.Demo
 #else 
             CamButton.gameObject.SetActive(false);
 #endif
+
+            // invisible until Agent joins
+            Visualizer.gameObject.SetActive(false);
         }
 
 
@@ -205,6 +208,9 @@ namespace Agora.TEN.Demo
         {
             Debug.Log(string.Format("OnUserJoined uid: ${0} elapsed: ${1}", uid,
                 elapsed));
+            if (uid == AppConfig.Shared.AgentUid) {
+                _app.Visualizer.gameObject.SetActive(true);
+			}
         }
 
         public override void OnUserOffline(RtcConnection connection, uint uid, USER_OFFLINE_REASON_TYPE reason)
@@ -216,7 +222,7 @@ namespace Agora.TEN.Demo
         public override void OnStreamMessage(RtcConnection connection, uint remoteUid, int streamId, byte[] data, ulong length, ulong sentTs)
         {
             string str = System.Text.Encoding.UTF8.GetString(data, 0, (int)length);
-            Debug.Log($"StreamMessage from:{remoteUid} ---> " + str);
+            // Debug.Log($"StreamMessage from:{remoteUid} ---> " + str);
             _app.TextDisplay.ProcessTextData(remoteUid, str);
             _app.TextDisplay.DisplayChatMessages(_app.LogText.gameObject);
         }

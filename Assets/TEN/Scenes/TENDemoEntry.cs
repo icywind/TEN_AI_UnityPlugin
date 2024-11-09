@@ -30,7 +30,6 @@ namespace Agora.TEN.Client
         void Start()
         {
             SetupUI();
-            SetConfig();
         }
 
         void SetupUI()
@@ -39,8 +38,9 @@ namespace Agora.TEN.Client
             footnote.text = "Agora IO 2024.  ver." + Application.version;
             JoinButton.onClick.AddListener(JoinChannel);
 
-            int enumCount = Enum.GetValues(typeof(VoiceType)).Length;
-            foreach (string voiceName in Enum.GetNames(typeof(VoiceType)))
+            int enumCount = Enum.GetValues(typeof(AzureVoiceType)).Length;
+            string configVoiceType = TENConfig.AzureVoice.ToString();
+            foreach (string voiceName in Enum.GetNames(typeof(AzureVoiceType)))
             {
                 GameObject go = Instantiate(TogglePrefab);
                 Toggle toggle = go.GetComponent<Toggle>();
@@ -57,13 +57,10 @@ namespace Agora.TEN.Client
                 {
                     tran.localScale = Vector3.one;
                 }
-                Console.WriteLine("Added Toggle:" + voiceName);
+                if (voiceName == configVoiceType) {
+                    toggle.SetIsOnWithoutNotify(true);
+				}
             }
-        }
-
-        void SetConfig()
-        {
-            AppConfig.Shared.SetValue(TENConfig);
         }
 
         void JoinChannel()
@@ -79,15 +76,16 @@ namespace Agora.TEN.Client
 
         void UpdateConfig()
         {
+            AppConfig.Shared.SetValue(TENConfig);
             AppConfig.Shared.Channel = ChannelInput.text;
             Toggle activeToggle = ToggleGroup.ActiveToggles().FirstOrDefault();
             if (activeToggle != null)
             {
                 Debug.Log("Active Toggle: " + activeToggle.name);
-                VoiceType vtype;
+                AzureVoiceType vtype;
                 if (Enum.TryParse(activeToggle.name, true, out vtype))
                 {
-                    AppConfig.Shared.VoiceType = vtype;
+                    AppConfig.Shared.SetAgentVoice(voiceType: vtype);
                 }
                 else
                 {

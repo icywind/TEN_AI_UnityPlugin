@@ -86,6 +86,7 @@
     <Compile Include="Assets/TEN/Utils/UIElementDragger.cs" />
     <Compile Include="Assets/Agora-RTC-Plugin/API-Example/Tools/UIElementDragger.cs" />
     <Compile Include="Assets/Agora-RTC-Plugin/API-Example/Examples/Advanced/MediaPlayer/MediaPlayerExample.cs" />
+    <Compile Include="Assets/TEN/Models/STTStreamDecoder.cs" />
     <Compile Include="Assets/Agora-RTC-Plugin/API-Example/Examples/Advanced/Plugin/PluginSceneSample.cs" />
     <Compile Include="Assets/TEN/Scenes/TENDemoEntry.cs" />
     <Compile Include="Assets/Agora-RTC-Plugin/API-Example/Examples/Advanced/Metadata/MetadataSample.cs" />

@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System;
 using Newtonsoft.Json;
 
 namespace Agora.TEN.Server.Models
@@ -18,21 +18,46 @@ namespace Agora.TEN.Server.Models
         public uint Uid { get; set; }
     }
 
-    public class ServerStartProperties
+    #region --- Start API Models ---
+    [Serializable]
+    public class AgentProperties
     {
-        /// Properties for Agora RTC.
         [JsonProperty("agora_rtc")]
-        public Dictionary<string, string> AgoraRtc { get; set; }
+        public AgoraRtcExtConfig AgoraRtc { get; set; }
 
-        /// Properties for OpenAI ChatGPT.
         [JsonProperty("openai_chatgpt")]
-        public Dictionary<string, string> OpenaiChatGPT { get; set; }
+        public OpenaiChatgptExtConfig OpenaiChatgpt { get; set; }
 
-        /// Properties for Azure TTS.
         [JsonProperty("azure_tts")]
-        public Dictionary<string, string> AzureTTS { get; set; }
+        public AzureTtsExtConfig AzureTts { get; set; }
     }
 
+    [Serializable]
+    public class AgoraRtcExtConfig
+    {
+        [JsonProperty("agora_asr_language")]
+        public string AgoraAsrLanguage { get; set; }
+    }
+
+    [Serializable]
+    public class OpenaiChatgptExtConfig
+    {
+        [JsonProperty("model")]
+        public string Model { get; set; }
+
+        [JsonProperty("greeting")]
+        public string Greeting { get; set; }
+
+        [JsonProperty("checking_vision_text_items")]
+        public string CheckingVisionTextItems { get; set; }
+    }
+
+    [Serializable]
+    public class AzureTtsExtConfig
+    {
+        [JsonProperty("azure_synthesis_voice_name")]
+        public string AzureSynthesisVoiceName { get; set; }
+    }
 
     public class ServiceStartRequest
     {
@@ -51,8 +76,12 @@ namespace Agora.TEN.Server.Models
         [JsonProperty("graph_name")]
         public string GraphName { get; set; }
 
+        /// The ASR language
         [JsonProperty("language")]
         public string Language { get; set; }
+
+        [JsonProperty("properties")]
+        public AgentProperties Properties { get; set; }
 
         /// The type of voice.
         [JsonProperty("voice_type")]
@@ -60,26 +89,7 @@ namespace Agora.TEN.Server.Models
 
     }
 
-    public class StartServiceRequest
-    {
-        [JsonProperty("request_id")]
-        public string RequestId { get; set; }
-
-        [JsonProperty("channel_name")]
-        public string ChannelName { get; set; }
-
-        [JsonProperty("user_uid")]
-        public uint UserUid { get; set; }
-
-        [JsonProperty("graph_name")]
-        public string GraphName { get; set; }
-
-        [JsonProperty("language")]
-        public string Language { get; set; }
-
-        [JsonProperty("voice_type")]
-        public string VoiceType { get; set; }
-    }
+    #endregion
 
     public class ServiceStopRequest
     {

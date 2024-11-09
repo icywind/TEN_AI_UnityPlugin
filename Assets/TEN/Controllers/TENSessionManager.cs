@@ -13,7 +13,6 @@ namespace Agora.TEN.Client
         bool _keepAlive = false;
 
         #region --- TEN Session APIs ---
-
         public async void StartSession(uint LocalUID)
         {
             var res = await NetworkManager.ApiRequestStartService(LocalUID);

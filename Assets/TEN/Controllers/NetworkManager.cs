@@ -1,4 +1,4 @@
-﻿using Agora.TEN.Server.Models;
+using Agora.TEN.Server.Models;
 using Newtonsoft.Json;
 using System;
 using System.IO;
@@ -19,6 +19,7 @@ namespace Agora.TEN.Client
         /// <returns>RTC token string</returns>
         public static async Task<string> RequestTokenAsync(uint uid)
         {
+            /// AppConfig.Shared.Channel = "agora_astratest";
             // Get the shared AppConfig instance
             var config = AppConfig.Shared;
 
@@ -50,6 +51,8 @@ namespace Agora.TEN.Client
         {
             // Get the shared AppConfig instance
             var config = AppConfig.Shared;
+            // Create a ServerStartProperties object with configuration for Agora RTC, OpenAI ChatGPT, and Azure TTS
+            var startProperties = config.AgentProperties;
 
             // Create a ServiceStartRequest object with request ID, channel name, OpenAI proxy URL, remote stream ID, graph name, voice type, and start properties
             var data = new ServiceStartRequest
@@ -57,9 +60,10 @@ namespace Agora.TEN.Client
                 RequestId = GetUUID(),
                 ChannelName = config.Channel,
                 UserUid = uid,
-                GraphName = config.GraphName, // e.g.  "camera.va.openai.azure",
-                VoiceType = config.VoiceType.ToString().ToLower(),
-                Language = config.AgoraAsrLanguage, // e.g. en-US
+                GraphName = config.GraphName, 
+                VoiceType = "female",
+                Language = "en-US",
+                Properties = startProperties
             };
 
             //var data = new StartServiceRequest
@@ -172,7 +176,6 @@ namespace Agora.TEN.Client
                 return jsonResponse;
             }
         }
-
 
         internal static string GetUUID()
         {
