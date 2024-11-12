@@ -13,9 +13,8 @@ The Plugin is exported as a reusable package that can be imported on any Agora R
 ## Prerequisites:
 
 - Agora Developer account
-
+- Agora Video SDK for Unity (v4.4.0 or up)
 - [TEN Frameworks Agent](https://github.com/TEN-framework/TEN-Agent)
-
 - Unity 2021 or up
 
   
@@ -80,6 +79,10 @@ void  SetConfig()
 	// obtain channel name before this call
     AppConfig.Shared.Channel = _channelName;
 }
+```
+Note you should provide a channel name in your app logic to use among the participanting users.  In this 1-to-1 chat project, we provide an util function to ganerate a string:
+```csharp
+    _channelName = AppConfig.Shared.Channel = UtilFunctions.GenRandomString("agora_", 5);
 ```
 
 2. Hook the prefabs up in your main logic:
