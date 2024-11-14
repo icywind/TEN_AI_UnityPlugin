@@ -13,7 +13,7 @@ The Plugin is exported as a reusable package that can be imported on any Agora R
 ## Prerequisites:
 
 - Agora Developer account
-- Agora Video SDK for Unity (v4.4.0 or up)
+- Agora Video SDK for Unity (v4.2.6 or up)
 - [TEN Frameworks Agent](https://github.com/TEN-framework/TEN-Agent)
 - Unity 2021 or up
 
@@ -134,16 +134,29 @@ public  override  bool  OnPlaybackAudioFrameBeforeMixing(string  channel_id, uin
 }
 ```
 
-  
-  
-
 6. Add the following to OnJoinChannelSuccess()
 ```csharp
 // _app is the instance of your controller class
 _app.TENSession.StartSession(connection.localUid);
 ```
 
+7. Disable/Enable the sound visualizer, a component of a gameobject that represents the AI Agent:
+- Disable it during initialization, e.g. SetupUI() or Start()
+```csharp
+	Visualizer?.gameObject.SetActive(false);
+```
+- Enable it when the AI Agent user joins the channel:
+```csharp
+public override void OnUserJoined(RtcConnection connection, uint uid, int elapsed)
+{
+    if (uid == AppConfig.Shared.AgentUid) {
+        _app.Visualizer?.gameObject.SetActive(true);
+	}
+}
+```
+
 7. Register handler OnStreamMessage:
+- SDK ver 4.4.0
 ```csharp
 public  override  void  OnStreamMessage(RtcConnection  connection, uint  remoteUid, int  streamId, byte[] data, ulong  length, ulong  sentTs)
 {
@@ -153,7 +166,16 @@ public  override  void  OnStreamMessage(RtcConnection  connection, uint  remoteU
 }
 
 ```
+- SDK ver 4.2.6
+```csharp
+public override void OnStreamMessage(RtcConnection connection, uint remoteUid, int streamId, byte[] data, uint length, System.UInt64 sentTs)
+{
+    string str = System.Text.Encoding.UTF8.GetString(data, 0, (int)length);
+    _app.TextDisplay.ProcessTextData(remoteUid, str);
+    _app.TextDisplay.DisplayChatMessages(_app.LogText.gameObject);
+}
 
+```
 8. OnDestroy() or logic to stop.
 
 ```csharp
