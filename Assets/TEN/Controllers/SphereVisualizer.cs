@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
+using Agora.Rtc;
 
-public class SphereVisualizer : MonoBehaviour
+public class SphereVisualizer : ISoundVisualizer
 {
     [SerializeField]
     float sizeMultiplier = 10f; // Multiplier for sphere size
@@ -13,6 +14,9 @@ public class SphereVisualizer : MonoBehaviour
 
     [SerializeField]
     bool showRotationMotion;
+
+    public int CHANNEL = 1;
+    public int SAMPLE_RATE = 44100;
 
     float[] _pcmData = new float[0];
 
@@ -28,8 +32,15 @@ public class SphereVisualizer : MonoBehaviour
         }
     }
 
+    public override void Init(IRtcEngine RtcEngine)
+    {
+        RtcEngine.SetPlaybackAudioFrameBeforeMixingParameters(SAMPLE_RATE, CHANNEL);
+        RtcEngine.RegisterAudioFrameObserver(new AgoraAudioObserver(this),
+             AUDIO_FRAME_POSITION.AUDIO_FRAME_POSITION_BEFORE_MIXING,
+            OBSERVER_MODE.RAW_DATA);
+    }
 
-    public void UpdateVisualizer(float[] pcmData)
+    public override void UpdateVisualizer(float[] pcmData)
     {
         _pcmData = pcmData;
     }

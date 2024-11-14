@@ -43,8 +43,6 @@ namespace Agora.TEN.Demo
         [SerializeField]
         Button CamButton;
 
-        public int CHANNEL = 1;
-        public int SAMPLE_RATE = 44100;
 
         void Start()
         {
@@ -131,11 +129,7 @@ namespace Agora.TEN.Demo
             RtcEngine.Initialize(context);
             RtcEngine.InitEventHandler(handler);
 
-            RtcEngine.SetPlaybackAudioFrameBeforeMixingParameters(SAMPLE_RATE, CHANNEL);
-
-            RtcEngine.RegisterAudioFrameObserver(new AudioFrameObserver(this),
-                 AUDIO_FRAME_POSITION.AUDIO_FRAME_POSITION_BEFORE_MIXING,
-                OBSERVER_MODE.RAW_DATA);
+            Visualizer?.Init(RtcEngine);
         }
 
         async void GetTokenAndJoin()
@@ -236,22 +230,6 @@ namespace Agora.TEN.Demo
 
     #endregion
 
-    internal class AudioFrameObserver : IAudioFrameObserver
-    {
-        TENDemoChat _app;
-        internal AudioFrameObserver(TENDemoChat client)
-        {
-            _app = client;
-        }
 
-        public override bool OnPlaybackAudioFrameBeforeMixing(string channel_id,
-                                                        uint uid,
-                                                        AudioFrame audio_frame)
-        {
-            var floatArray = UtilFunctions.ConvertByteToFloat16(audio_frame.RawBuffer);
-            _app.Visualizer?.UpdateVisualizer(floatArray);
-            return false;
-        }
-    }
 
 }

@@ -1,7 +1,5 @@
 using UnityEngine;
-using Newtonsoft.Json;
 
-using Agora.TEN.Server.Models;
 namespace Agora.TEN.Client
 {
     public abstract class IChatTextDisplay : MonoBehaviour

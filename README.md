@@ -105,42 +105,19 @@ async void GetTokenAndJoin()
 }
 ```
 
-4. Setup for Audio display before Mixing in InitEngine()
+4. Setup sound visualization, which will automatically configure the Agora RTC engine for audio data capture.
 
 ```csharp
-int  CHANNEL = 1;
-int  SAMPLE_RATE = 44100;
-RtcEngine.SetPlaybackAudioFrameBeforeMixingParameters(SAMPLE_RATE, CHANNEL);
-RtcEngine.RegisterAudioFrameObserver(new  AudioFrameObserver(this),
-AUDIO_FRAME_POSITION.AUDIO_FRAME_POSITION_BEFORE_MIXING,OBSERVER_MODE.RAW_DATA);
+	Visualizer?.Init(RtcEngine);
 ```
 
-5. Implement AudioFrameObserver:
-```csharp
-internal  class  AudioFrameObserver : IAudioFrameObserver
-{
-	TENDemoChat  _app;  // Replace TENDemo with your controller class name
-	internal  AudioFrameObserver(TENDemoChat  client)
-	{
-		_app = client;
-	}
-}
-
-public  override  bool  OnPlaybackAudioFrameBeforeMixing(string  channel_id, uint  uid,AudioFrame  audio_frame)
-{
-	var  floatArray = UtilFunctions.ConvertByteToFloat16(audio_frame.RawBuffer);
-	_app.Visualizer?.UpdateVisualizer(floatArray);
-	return  false;
-}
-```
-
-6. Add the following to OnJoinChannelSuccess()
+5. Start the TEN session on OnJoinChannelSuccess()
 ```csharp
 // _app is the instance of your controller class
 _app.TENSession.StartSession(connection.localUid);
 ```
 
-7. Disable/Enable the sound visualizer, a component of a gameobject that represents the AI Agent:
+6. Disable/Enable the sound visualizer, a component of a gameobject that represents the AI Agent:
 - Disable it during initialization, e.g. SetupUI() or Start()
 ```csharp
 	Visualizer?.gameObject.SetActive(false);
