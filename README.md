@@ -77,13 +77,13 @@ void  SetConfig()
 {
 	AppConfig.Shared.SetValue(TENConfig);
 	// obtain channel name before this call
-    AppConfig.Shared.Channel = _channelName;
+	AppConfig.Shared.Channel = UtilFunctions.GenRandomString("agora_", 5);
 }
 ```
-Note you should provide a channel name in your app logic to use among the participanting users.  In this 1-to-1 chat project, we provide an util function to ganerate a string:
-```csharp
-    _channelName = AppConfig.Shared.Channel = UtilFunctions.GenRandomString("agora_", 5);
-```
+Note you should provide a channel name in your app logic to use among the participanting users.  In this 1-to-1 chat project, we provide an util function GenRandomString() to ganerate the channel name.
+
+Don't forget to drop the TENConfigInput Asset into Inspector field for TENConfig. See demo picture in the previous section.
+
 
 2. Hook the prefabs up in your main logic:
 
@@ -105,7 +105,7 @@ async void GetTokenAndJoin()
 }
 ```
 
-4. Setup sound visualization, which will automatically configure the Agora RTC engine for audio data capture.
+4. In your initialization step, setup sound visualization, which will automatically configure the Agora RTC engine for audio data capture.
 
 ```csharp
 	Visualizer?.Init(RtcEngine);
