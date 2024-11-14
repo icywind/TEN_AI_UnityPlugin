@@ -213,7 +213,8 @@ namespace Agora.TEN.Demo
                 (int)reason));
         }
 
-
+        /* SDK v4.2.6 */
+        // public override void OnStreamMessage(RtcConnection connection, uint remoteUid, int streamId, byte[] data, uint length, System.UInt64 sentTs)
         /* SDK v4.4.0 or later */
          public override void OnStreamMessage(RtcConnection connection, uint remoteUid, int streamId, byte[] data, ulong length, ulong sentTs)
         {
