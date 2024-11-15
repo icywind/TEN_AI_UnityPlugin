@@ -28,7 +28,8 @@ namespace Agora.TEN.Client
         public AzureVoiceType AzureVoice;
 
         [SerializeField]
-        /// if it is not the provided Azure choice, enter the actual voice name here
+        [Tooltip("if the voice is not provided by Azure, enter the vendor's voice name here")]
+        /// Alternative voice override
         public string AltVoiceName;
 
         [SerializeField]

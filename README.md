@@ -13,7 +13,7 @@ The Plugin is exported as a reusable package that can be imported on any Agora R
 ## Prerequisites:
 
 - Agora Developer account
-- Agora Video SDK for Unity (v4.4.0 or up)
+- Agora Video SDK for Unity (v4.2.6 or up)
 - [TEN Frameworks Agent](https://github.com/TEN-framework/TEN-Agent)
 - Unity 2021 or up
 
@@ -77,13 +77,13 @@ void  SetConfig()
 {
 	AppConfig.Shared.SetValue(TENConfig);
 	// obtain channel name before this call
-    AppConfig.Shared.Channel = _channelName;
+	AppConfig.Shared.Channel = UtilFunctions.GenRandomString("agora_", 5);
 }
 ```
-Note you should provide a channel name in your app logic to use among the participanting users.  In this 1-to-1 chat project, we provide an util function to ganerate a string:
-```csharp
-    _channelName = AppConfig.Shared.Channel = UtilFunctions.GenRandomString("agora_", 5);
-```
+Note you should provide a channel name in your app logic to use among the participanting users.  In this 1-to-1 chat project, we provide an util function GenRandomString() to ganerate the channel name.
+
+Don't forget to drop the TENConfigInput Asset into Inspector field for TENConfig. See demo picture in the previous section.
+
 
 2. Hook the prefabs up in your main logic:
 
@@ -105,45 +105,35 @@ async void GetTokenAndJoin()
 }
 ```
 
-4. Setup for Audio display before Mixing in InitEngine()
+4. In your initialization step, setup sound visualization, which will automatically configure the Agora RTC engine for audio data capture.
 
 ```csharp
-int  CHANNEL = 1;
-int  SAMPLE_RATE = 44100;
-RtcEngine.SetPlaybackAudioFrameBeforeMixingParameters(SAMPLE_RATE, CHANNEL);
-RtcEngine.RegisterAudioFrameObserver(new  AudioFrameObserver(this),
-AUDIO_FRAME_POSITION.AUDIO_FRAME_POSITION_BEFORE_MIXING,OBSERVER_MODE.RAW_DATA);
+	Visualizer?.Init(RtcEngine);
 ```
 
-5. Implement AudioFrameObserver:
-```csharp
-internal  class  AudioFrameObserver : IAudioFrameObserver
-{
-	TENDemoChat  _app;  // Replace TENDemo with your controller class name
-	internal  AudioFrameObserver(TENDemoChat  client)
-	{
-		_app = client;
-	}
-}
-
-public  override  bool  OnPlaybackAudioFrameBeforeMixing(string  channel_id, uint  uid,AudioFrame  audio_frame)
-{
-	var  floatArray = UtilFunctions.ConvertByteToFloat16(audio_frame.RawBuffer);
-	_app.Visualizer?.UpdateVisualizer(floatArray);
-	return  false;
-}
-```
-
-  
-  
-
-6. Add the following to OnJoinChannelSuccess()
+5. Start the TEN session on OnJoinChannelSuccess()
 ```csharp
 // _app is the instance of your controller class
 _app.TENSession.StartSession(connection.localUid);
 ```
 
+6. Disable/Enable the sound visualizer, a component of a gameobject that represents the AI Agent:
+- Disable it during initialization, e.g. SetupUI() or Start()
+```csharp
+	Visualizer?.gameObject.SetActive(false);
+```
+- Enable it when the AI Agent user joins the channel:
+```csharp
+public override void OnUserJoined(RtcConnection connection, uint uid, int elapsed)
+{
+    if (uid == AppConfig.Shared.AgentUid) {
+        _app.Visualizer?.gameObject.SetActive(true);
+	}
+}
+```
+
 7. Register handler OnStreamMessage:
+- SDK ver 4.4.0
 ```csharp
 public  override  void  OnStreamMessage(RtcConnection  connection, uint  remoteUid, int  streamId, byte[] data, ulong  length, ulong  sentTs)
 {
@@ -153,7 +143,16 @@ public  override  void  OnStreamMessage(RtcConnection  connection, uint  remoteU
 }
 
 ```
+- SDK ver 4.2.6
+```csharp
+public override void OnStreamMessage(RtcConnection connection, uint remoteUid, int streamId, byte[] data, uint length, System.UInt64 sentTs)
+{
+    string str = System.Text.Encoding.UTF8.GetString(data, 0, (int)length);
+    _app.TextDisplay.ProcessTextData(remoteUid, str);
+    _app.TextDisplay.DisplayChatMessages(_app.LogText.gameObject);
+}
 
+```
 8. OnDestroy() or logic to stop.
 
 ```csharp
